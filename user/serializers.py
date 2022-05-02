@@ -11,25 +11,19 @@ def valid_password(password):
         raise e
 
 
+class UserAuthorizationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(validators=[valid_password])
+    password = serializers.CharField(write_only=True, validators=[valid_password])
 
     class Meta:
         model = User
         fields = ('email', 'password', 'first_name', 'last_name', 'role')
 
-    def __init__(self, *args, **kwargs):
-        super(UserSerializer, self).__init__(*args, **kwargs)
-        try:
-            if self.context['request'].method in ['POST']:
-                pass
-            elif self.context['request'].method in ['GET']:
-                self.fields.pop('password')
-
-        except KeyError:
-            pass
-
-    # def create(self, validated_data):
-    #     user = User.objects.create_user(**validated_data)
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
 
 
