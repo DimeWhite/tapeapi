@@ -19,12 +19,11 @@ class UserPermission(permissions.BasePermission):
             return False
 
     def has_object_permission(self, request, view, obj):
-        print(obj)
         if view.action == 'retrieve':
             if obj.type == "PUBLIC":
                 return True
             else:
-                return obj == request.user
+                return request.user.is_authenticated
 
         elif view.action in ['update', 'partial_update']:
             return request.user.role == "AUTHOR" or request.user.is_superuser

@@ -31,7 +31,8 @@ class ArticleSerializers(serializers.ModelSerializer):
                         self.fields.clear()
                 else:
                     self.fields.clear()
-
+            elif self.context['request'].method in ['PUT', 'DESTROY']:
+                self.fields.pop('author')
             elif self.context['request'].method in ['GET']:
                 pass
         except KeyError:
